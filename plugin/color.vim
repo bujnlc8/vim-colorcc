@@ -5,6 +5,8 @@ let s:has_popup = has('patch-8.2.0286')
 function! s:popup_filter(winid, key)
     if a:key == 'z'
         call popup_close(a:winid)
+    elseif a:key == 'q'
+        call popup_clear()
     endif
 endfunction
 
@@ -60,7 +62,11 @@ function! s:tile_color(...)
         while start_y < total_lines
             while start_x < total_columns
                 let l:color = g:color#colors[float2nr(color#random() * 525)]
-                call s:_show_color(l:color, start_y, start_x, disappear)
+                let tmp = disappear
+                if !disappear && i < times - 1
+                    let tmp = 1
+                endif
+                call s:_show_color(l:color, start_y, start_x, tmp)
                 let start_x = start_x + s:width + 1
             endwhile
             let start_x = 1
