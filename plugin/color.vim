@@ -8,6 +8,14 @@ if !exists('g:color_height_split_num')
     let g:color_height_split_num = 4
 endif
 
+if !exists('g:color_show_hex')
+    let g:color_show_hex = 1
+endif
+
+if !exists('g:color_show_name')
+    let g:color_show_name = 1
+endif
+
 let s:has_popup = has('patch-8.2.0286')
 
 let s:size = {
@@ -137,15 +145,21 @@ function! s:tile_color(...)
     let disappear = 0
     let size = 1
     let times = 1
+    let _color = ''
     if len(a:000) == 1
         let times = a:000[0] + 1
     elseif len(a:000) == 2
         let times = a:000[0] + 0
         let disappear = a:000[1] + 0
-    elseif len(a:000) >= 3
+    elseif len(a:000) == 3
         let times = a:000[0] + 0
         let disappear = a:000[1] + 0
         let size = a:000[2]
+    elseif len(a:000) >=4
+        let times = a:000[0] + 0
+        let disappear = a:000[1] + 0
+        let size = a:000[2]
+        let _color = a:000[3]
     endif
     if !has_key(s:size, size)
         echoerr 'third argument is error, valid number is 0-2'
@@ -164,7 +178,11 @@ function! s:tile_color(...)
         let _height = height
         while start_y < total_lines
             while start_x < total_columns
-                let color = g:color#colors[float2nr(color#random() * 526)]
+                if len(_color) == 0
+                    let color = g:color#colors[float2nr(color#random() * 526)]
+                else
+                    let color = _color
+                endif
                 let tmp = disappear
                 if !disappear && i < times - 1
                     let tmp = 1
@@ -227,9 +245,13 @@ function! s:_show_color(color, line, column, width, height, disappear)
         endfor
     endif
     if strdisplaywidth(color) <= a:width
-        call setbufline(winbuf, a:height / 2, s:get_blank(color, a:width).color)
+        if g:color_show_hex
+            call setbufline(winbuf, a:height / 2, s:get_blank(color, a:width).color)
+        else
+            call setbufline(winbuf, a:height / 2, '')
+        endif
     endif
-    if has_key(g:color#hex_map, color) && strdisplaywidth(g:color#hex_map[color]['name']) <= a:width
+    if has_key(g:color#hex_map, color) && strdisplaywidth(g:color#hex_map[color]['name']) <= a:width && g:color_show_name
         call setbufline(winbuf, a:height / 2 + 1, s:get_blank(g:color#hex_map[color]['name'], a:width).g:color#hex_map[color]['name'])
     endif
     try
