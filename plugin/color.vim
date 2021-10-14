@@ -13,7 +13,7 @@ let s:has_popup = has('patch-8.2.0286')
 let s:size = {
             \0:{'width': 12, 'height': 4},
             \1:{'width': 16, 'height': 6},
-            \2:{'width': 24, 'height': 8},
+            \2:{'width': 22, 'height': 8},
             \3:{'width': 10, 'height': 3},
             \}
 
@@ -234,6 +234,7 @@ function! s:_show_color(color, line, column, width, height, disappear)
     endif
     try
         call setbufvar(winid, '&termguicolors', 1)
+        call setbufvar(winid, '&t_Co', 256)
         let guifg='white'
         if match(color, '#') != -1
             if eval(substitute(color, '#', '0x', '')) > (0xffffff / 2)
