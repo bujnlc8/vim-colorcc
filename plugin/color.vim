@@ -40,7 +40,7 @@ endfunction
 
 
 let s:width = 16
-let s:height = 5
+let s:height = 6
 
 function! s:tile_color(...)
     if len(a:000) == 0
@@ -67,13 +67,22 @@ function! s:tile_color(...)
                     let tmp = 1
                 endif
                 call s:_show_color(l:color, start_y, start_x, tmp)
-                let start_x = start_x + s:width + 1
+                let start_x = start_x + s:width
             endwhile
             let start_x = 1
-            let start_y = start_y + s:height + 1
+            let start_y = start_y + s:height
         endwhile
         let i = i + 1
     endwhile
+endfunction
+
+function! s:get_blank(ss, width)
+    let occupied_width = strdisplaywidth(a:ss)
+    let blank = ''
+    for x in range((a:width - occupied_width) / 2)
+        let blank = blank.' '
+    endfor
+    return blank
 endfunction
 
 function! s:_show_color(color, line, column, disappear)
@@ -85,7 +94,7 @@ function! s:_show_color(color, line, column, disappear)
     if (color-1) >= 0 && len(color) == 6 && match(color, '#') == -1
         let color = '#'.color
     endif
-    let options = {'highlight': 'ColorHi'.substitute(a:color, '#', '', ''), 'filter': function('s:popup_filter')}
+    let options = {'highlight': 'ColorHi'.substitute(a:color, '#', '', ''), 'filter': function('s:popup_filter'), 'minwidth': s:width, 'minheight': s:height}
     if a:line != -1
         let options['line'] = a:line
         let options['col'] = a:column
@@ -95,19 +104,14 @@ function! s:_show_color(color, line, column, disappear)
     else
         call popup_clear()
     endif
-    let winid = popup_create('', options)
+    let winid = popup_create(['',''], options)
     let winbuf = winbufnr(winid)
-    call setbufline(winbuf, 1, '                ')
-    call setbufline(winbuf, 2, '       ')
-    call setbufline(winbuf, 3, '    '.color.'    ')
+    call setbufline(winbuf, 3, s:get_blank(color, s:width).color)
     if has_key(g:color#hex_map, color)
-        call setbufline(winbuf, 4, '    '.g:color#hex_map[color]['name'].'  ')
-    else
-        call setbufline(winbuf, 4, '       ')
+        call setbufline(winbuf, 4, s:get_blank(g:color#hex_map[color]['name'], s:width).g:color#hex_map[color]['name'])
     endif
-    call setbufline(winbuf, 5, '       ')
-    call setbufvar(winid, '&termguicolors', 1)
     try
+        call setbufvar(winid, '&termguicolors', 1)
         let guifg='white'
         if match(color, '#') != -1
             if eval(substitute(color, '#', '0x', '')) > (0xffffff / 2)
@@ -124,7 +128,7 @@ function! s:_show_color(color, line, column, disappear)
             let color = g:color#name_map[a:color]['hex']
             call s:_show_color(color, a:line, a:column, a:disappear)
         else
-            echo '[ColorTester] Not a valid color: '.a:color
+            echo '[ColorCC] Not a valid color: '.a:color
         endif
     endtry
 endfunction

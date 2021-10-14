@@ -2614,11 +2614,21 @@ let g:color#pinyin_map = {
 \        'hex': '#db8540',
 \        'name': '醉瓜肉',
 \        'pinyin': 'zuiguarou'
+\    },
+\    'jijindouhong': {
+\        'hex': '#da5162',
+\        'name': '基金豆红',
+\        'pinyin': 'jijindouhong'
 \    }
 \}
 
 
 let g:color#hex_map = {
+\    '#da5162': {
+\        'hex': '#da5162',
+\        'name': '基金豆红',
+\        'pinyin': 'jijindouhong'
+\    },
 \    '#0eb0c9': {
 \        'hex': '#0eb0c9',
 \        'name': '孔雀蓝',
@@ -7877,7 +7887,12 @@ let g:color#name_map = {
 \        'hex': '#826b48',
 \        'name': '龟背黄',
 \        'pinyin': 'guibeihuang'
-\    }
+\    },
+\    '基金豆红': {
+\        'hex': '#da5162',
+\        'name': '基金豆红',
+\        'pinyin': 'jijindouhong'
+\    },
 \}
 
 
