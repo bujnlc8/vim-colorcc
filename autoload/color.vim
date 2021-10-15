@@ -2619,7 +2619,12 @@ let g:color#pinyin_map = {
 \        'hex': '#da5162',
 \        'name': '基金豆红',
 \        'pinyin': 'jijindouhong'
-\    }
+\    },
+\    'zhongguohong': {
+\        'hex': '#e60000',
+\        'name': '中国红',
+\        'pinyin': 'zhongguohong'
+\    },
 \}
 
 let g:color#colors = keys(color_name#hex_map)
