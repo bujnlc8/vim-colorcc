@@ -45,18 +45,13 @@ function! s:random_color(color)
                 call add(res, x)
             endif
         endfor
-        for x in g:color#pinyin
-            if match(x, a:color) != -1
-                call add(res, g:color#pinyin_map[x]['name'])
-            endif
-        endfor
         if len(res) == 0
             echo '未找到相关颜色'
             return
         endif
-        let color = g:color#name_map[res[float2nr(color#random() * len(res))]]['hex']
+        let color = g:name_color#name_map[res[float2nr(color#random() * len(res))]]
     else
-        let color = g:color#colors[float2nr(color#random() * 526)]
+        let color = g:color#colors[float2nr(color#random() * 1115)]
     endif
     call s:_show_color(color, -1, -1, s:size[1]['width'], s:size[1]['height'], 0)
 endfunction
@@ -66,7 +61,7 @@ function! s:_tile_color(start_x, start_y, max_x, max_y, width, height, disappear
     let start_y = a:start_y
     while start_y < a:max_y
         while start_x < a:max_x
-            let color = g:color#colors[float2nr(color#random() * 526)]
+            let color = g:color#colors[float2nr(color#random() * 1115)]
             call s:_show_color(color, start_y, start_x, min([a:width, a:max_x-start_x]), min([a:height, a:max_y-start_y]), a:disappear)
             let start_x = start_x + a:width
         endwhile
@@ -112,7 +107,7 @@ function! s:tile_color_not_regular(...)
             let width = size['width']
             while start_y < y_border[1]
                 while start_x < x_border[1]
-                    let color = g:color#colors[float2nr(color#random() * 526)]
+                    let color = g:color#colors[float2nr(color#random() * 1115)]
                     if x_border[1] - start_x < size['width'] && x < (g:color_width_split_num -1)
                         if !has_key(sub, x.y)
                             let x_list[x+1][0] = x_list[x+1][0] - (x_border[1]-start_x)
@@ -179,7 +174,7 @@ function! s:tile_color(...)
         while start_y < total_lines
             while start_x < total_columns
                 if len(_color) == 0
-                    let color = g:color#colors[float2nr(color#random() * 526)]
+                    let color = g:color#colors[float2nr(color#random() * 1115)]
                 else
                     let color = _color
                 endif
@@ -251,8 +246,8 @@ function! s:_show_color(color, line, column, width, height, disappear)
             call setbufline(winbuf, a:height / 2, '')
         endif
     endif
-    if has_key(g:color#hex_map, color) && strdisplaywidth(g:color#hex_map[color]['name']) <= a:width && g:color_show_name
-        call setbufline(winbuf, a:height / 2 + 1, s:get_blank(g:color#hex_map[color]['name'], a:width).g:color#hex_map[color]['name'])
+    if has_key(g:color_name#hex_map, color) && strdisplaywidth(g:color_name#hex_map[color]) <= a:width && g:color_show_name
+        call setbufline(winbuf, a:height / 2 + 1, s:get_blank(g:color_name#hex_map[color], a:width).g:color_name#hex_map[color])
     endif
     try
         call setbufvar(winid, '&termguicolors', 1)
@@ -267,11 +262,9 @@ function! s:_show_color(color, line, column, width, height, disappear)
     catch
         call popup_close(winid)
         if has_key(g:color#pinyin_map, a:color)
-            let color = g:color#pinyin_map[a:color]['hex']
-            call s:_show_color(color, a:line, a:column, a:width, a:height, a:disappear)
-        elseif has_key(g:color#name_map, a:color)
-            let color = g:color#name_map[a:color]['hex']
-            call s:_show_color(color, a:line, a:column, a:width, a:height, a:disappear)
+            call s:_show_color(g:color#pinyin_map[a:color]['hex'], a:line, a:column, a:width, a:height, a:disappear)
+        elseif has_key(g:name_color#name_map, a:color)
+            call s:_show_color(g:name_color#name_map[a:color], a:line, a:column, a:width, a:height, a:disappear)
         else
             echo '[ColorCC] Not a valid color: '.a:color
         endif
