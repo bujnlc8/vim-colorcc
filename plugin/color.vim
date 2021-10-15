@@ -298,10 +298,10 @@ function! s:_show_color(color, line, column, width, height, disappear)
     try
         call setbufvar(winid, '&termguicolors', 1)
         call setbufvar(winid, '&t_Co', 256)
-        let guifg='white'
+        let guifg='#d8e3e7'
         if match(color, '#') != -1
             if eval(substitute(color, '#', '0x', '')) > (0xffffff / 2)
-                let guifg = 'black'
+                let guifg = '#161823'
             endif
         endif
         silent execute 'highlight ColorHi'.substitute(a:color, '#', '', '').'  guifg='.guifg.' guibg='.color
