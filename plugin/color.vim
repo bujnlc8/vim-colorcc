@@ -40,14 +40,19 @@ endfunction
 function! s:random_color(...)
     let color = ''
     let num = -1
+    let force_full = 1
     if len(a:000) == 1
         let color = a:000[0]
-    elseif len(a:000) >= 2
+    elseif len(a:000) == 2
         let color = a:000[0]
         let num = a:000[1] + 0
-        if num == 0 || num < -1
-            let num = -1
-        endif
+    elseif len(a:000) >= 3
+        let color = a:000[0]
+        let num = a:000[1] + 0
+        let force_full = a:000[2] + 0
+    endif
+    if num == 0 || num < -1
+        let num = -1
     endif
     call popup_clear()
     if len(color) == 0
@@ -76,19 +81,23 @@ function! s:random_color(...)
                 let i = i + 1
             endif
         endwhile
-        call s:_tile_specified_color(1, 1, &columns, &lines, s:size['1']['width'], s:size['1']['height'], 0, colors)
+        call s:_tile_specified_color(1, 1, &columns, &lines, s:size['1']['width'], s:size['1']['height'], 0, colors, force_full)
     endif
 endfunction
 
-function! s:_tile_specified_color(start_x, start_y, max_x, max_y, width, height, disappear, colors)
+function! s:_tile_specified_color(start_x, start_y, max_x, max_y, width, height, disappear, colors, force_full)
     let start_x = a:start_x
     let start_y = a:start_y
     let i = 0
     while start_y < a:max_y
         while start_x < a:max_x
-            if i >= len(a:colors)
-                let start_y = a:max_y
-                break
+            if i == len(a:colors)
+                if a:force_full
+                    let i = 0
+                else
+                    let start_y = a:max_y
+                    break
+                endif
             endif
             call s:_show_color(a:colors[i], start_y, start_x, min([a:width, a:max_x-start_x]), min([a:height, a:max_y-start_y]), a:disappear)
             let start_x = start_x + a:width
@@ -97,7 +106,7 @@ function! s:_tile_specified_color(start_x, start_y, max_x, max_y, width, height,
         let start_x = a:start_x
         let start_y = start_y + a:height
     endwhile
-    if i < len(a:colors)
+    if i < len(a:colors) && !a:force_full
         echo '颜色过多，未显示完全:('
     endif
 endfunction
