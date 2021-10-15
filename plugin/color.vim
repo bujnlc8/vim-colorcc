@@ -37,11 +37,26 @@ function! s:show_color(color)
     call s:_show_color(a:color, -1, -1, s:size[1]['width'], s:size[1]['height'], 0)
 endfunction
 
-function! s:random_color(color)
-    if len(a:color) > 0
+function! s:random_color(...)
+    let color = ''
+    let num = -1
+    if len(a:000) == 1
+        let color = a:000[0]
+    elseif len(a:000) >= 2
+        let color = a:000[0]
+        let num = a:000[1] + 0
+        if num == 0 || num < -1
+            let num = -1
+        endif
+    endif
+    call popup_clear()
+    if len(color) == 0
+        let color = g:color#colors[float2nr(color#random() * 1115)]
+        call s:_show_color(color, -1, -1, s:size[1]['width'], s:size[1]['height'], 0)
+    else
         let res = []
         for x in g:color#names
-            if match(x, a:color) != -1
+            if match(x, color) != -1
                 call add(res, x)
             endif
         endfor
@@ -49,11 +64,42 @@ function! s:random_color(color)
             echo '未找到相关颜色'
             return
         endif
-        let color = g:name_color#name_map[res[float2nr(color#random() * len(res))]]
-    else
-        let color = g:color#colors[float2nr(color#random() * 1115)]
+        let colors = []
+        if num == -1 || num > len(res)
+            let num = len(res)
+        endif
+        let i = 0
+        while i < num
+            let color = g:name_color#name_map[res[float2nr(color#random() * len(res))]]
+            if index(colors, color) == -1
+                call add(colors, color)
+                let i = i + 1
+            endif
+        endwhile
+        call s:_tile_specified_color(1, 1, &columns, &lines, s:size['1']['width'], s:size['1']['height'], 0, colors)
     endif
-    call s:_show_color(color, -1, -1, s:size[1]['width'], s:size[1]['height'], 0)
+endfunction
+
+function! s:_tile_specified_color(start_x, start_y, max_x, max_y, width, height, disappear, colors)
+    let start_x = a:start_x
+    let start_y = a:start_y
+    let i = 0
+    while start_y < a:max_y
+        while start_x < a:max_x
+            if i >= len(a:colors)
+                let start_y = a:max_y
+                break
+            endif
+            call s:_show_color(a:colors[i], start_y, start_x, min([a:width, a:max_x-start_x]), min([a:height, a:max_y-start_y]), a:disappear)
+            let start_x = start_x + a:width
+            let i = i + 1
+        endwhile
+        let start_x = a:start_x
+        let start_y = start_y + a:height
+    endwhile
+    if i < len(a:colors)
+        echo '颜色过多，未显示完全:('
+    endif
 endfunction
 
 function! s:_tile_color(start_x, start_y, max_x, max_y, width, height, disappear)
@@ -274,4 +320,4 @@ endfunction
 command! -nargs=1 Cs call <SID>show_color(<q-args>)
 command! -nargs=* Ct call <SID>tile_color(<f-args>)
 command! -nargs=* Cg call <SID>tile_color_not_regular(<f-args>)
-command! -nargs=? Cr call <SID>random_color(<q-args>)
+command! -nargs=* Cr call <SID>random_color(<f-args>)
