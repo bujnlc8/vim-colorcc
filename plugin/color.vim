@@ -222,6 +222,7 @@ function! s:tile_color(...)
     let i = 0
     call popup_clear()
     while i < times
+        let exists_colors = []
         let start_x = 1
         let start_y = 1
         let _width = width
@@ -230,6 +231,17 @@ function! s:tile_color(...)
             while start_x < total_columns
                 if len(_color) == 0
                     let color = g:color#colors[float2nr(color#random() * 1115)]
+                    if index(exists_colors, color) != -1
+                        for x in range(10)
+                            let color = g:color#colors[float2nr(color#random() * 1115)]
+                            if index(exists_colors, color) == -1
+                                call add(exists_colors, color)
+                                break
+                            endif
+                        endfor
+                    else
+                        call add(exists_colors, color)
+                    endif
                 else
                     let color = _color
                 endif
@@ -254,6 +266,10 @@ function! s:tile_color(...)
             let start_y = start_y + _height
         endwhile
         let i = i + 1
+        if times > 1
+            redraw!
+            sleep 500m
+        endif
     endwhile
 endfunction
 
