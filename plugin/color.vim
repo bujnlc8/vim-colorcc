@@ -217,8 +217,6 @@ function! s:tile_color(...)
     endif
     let width = s:size[size]['width']
     let height = s:size[size]['height']
-    let total_columns = &columns + 1
-    let total_lines = &lines + 1
     let i = 0
     while i < times
         let exists_colors = []
@@ -227,6 +225,8 @@ function! s:tile_color(...)
         let _width = width
         let _height = height
         call popup_clear()
+        let total_columns = &columns + 1
+        let total_lines = &lines + 1
         while start_y < total_lines
             while start_x < total_columns
                 if len(_color) == 0
