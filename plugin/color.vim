@@ -268,7 +268,7 @@ function! s:tile_color(...)
         let i = i + 1
         if times > 1
             redraw!
-            sleep 500m
+            6sleep
         endif
     endwhile
 endfunction
