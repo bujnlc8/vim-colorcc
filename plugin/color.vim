@@ -220,13 +220,13 @@ function! s:tile_color(...)
     let total_columns = &columns + 1
     let total_lines = &lines + 1
     let i = 0
-    call popup_clear()
     while i < times
         let exists_colors = []
         let start_x = 1
         let start_y = 1
         let _width = width
         let _height = height
+        call popup_clear()
         while start_y < total_lines
             while start_x < total_columns
                 if len(_color) == 0
@@ -268,7 +268,7 @@ function! s:tile_color(...)
         let i = i + 1
         if times > 1
             redraw!
-            6sleep
+            5sleep
         endif
     endwhile
 endfunction
