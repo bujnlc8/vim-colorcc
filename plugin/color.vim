@@ -81,7 +81,7 @@ function! s:random_color(...)
                 let i = i + 1
             endif
         endwhile
-        call s:_tile_specified_color(1, 1, &columns, &lines, s:size['1']['width'], s:size['1']['height'], 0, colors, force_full)
+        call s:_tile_specified_color(1, 1, &columns + 1, &lines + 1, s:size['1']['width'], s:size['1']['height'], 0, colors, force_full)
     endif
 endfunction
 
@@ -145,8 +145,8 @@ function! s:tile_color_not_regular(...)
     if len(a:000) == 1
         let disappear = a:000[0] + 0
     endif
-    let total_columns = &columns
-    let total_lines = &lines
+    let total_columns = &columns + 1
+    let total_lines = &lines + 1
     let x_list = s:get_start_list(total_columns, g:color_width_split_num)
     let y_list = s:get_start_list(total_lines, g:color_height_split_num)
     let sub = {}
@@ -217,8 +217,8 @@ function! s:tile_color(...)
     endif
     let width = s:size[size]['width']
     let height = s:size[size]['height']
-    let total_columns = &columns
-    let total_lines = &lines
+    let total_columns = &columns + 1
+    let total_lines = &lines + 1
     let i = 0
     call popup_clear()
     while i < times
