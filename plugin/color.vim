@@ -16,6 +16,10 @@ if !exists('g:color_show_name')
     let g:color_show_name = 1
 endif
 
+if !exists('g:color_switch_timeout')
+    let g:color_switch_timeout = 5
+endif
+
 let s:has_popup = has('patch-8.2.0286')
 
 let s:size = {
@@ -197,7 +201,7 @@ function! s:tile_color(...)
     let times = 1
     let _color = ''
     if len(a:000) == 1
-        let times = a:000[0] + 1
+        let times = a:000[0] + 0
     elseif len(a:000) == 2
         let times = a:000[0] + 0
         let disappear = a:000[1] + 0
@@ -268,7 +272,7 @@ function! s:tile_color(...)
         let i = i + 1
         if times > 1
             redraw!
-            5sleep
+            execute g:color_switch_timeout.'sleep'
         endif
     endwhile
 endfunction

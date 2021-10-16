@@ -28,6 +28,7 @@ OR
 
 * `let g:color_show_name=1`， 是否显示颜色名称，默认1。
 
+* `let g:color_switch_timeout = 5`, 循环显示时，切换的时间间隔，默认为5s。
 
 ## 命令
 
